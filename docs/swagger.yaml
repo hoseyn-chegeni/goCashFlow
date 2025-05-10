@@ -1,0 +1,24 @@
+basePath: /
+host: localhost:3000
+info:
+  contact: {}
+  description: This is a sample Swagger + Fiber API
+  title: Fiber Swagger API
+  version: "1.0"
+paths:
+  /hi/:
+    get:
+      consumes:
+      - application/json
+      description: Responds with a simple "hi!" message.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: SetupRoutes!
+          schema:
+            type: string
+      summary: SetupRoutes Endpoint
+      tags:
+      - SetupRoutes
+swagger: "2.0"

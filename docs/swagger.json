@@ -1,0 +1,36 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample Swagger + Fiber API",
+        "title": "Fiber Swagger API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:3000",
+    "basePath": "/",
+    "paths": {
+        "/hi/": {
+            "get": {
+                "description": "Responds with a simple \"hi!\" message.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SetupRoutes"
+                ],
+                "summary": "SetupRoutes Endpoint",
+                "responses": {
+                    "200": {
+                        "description": "SetupRoutes!",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
