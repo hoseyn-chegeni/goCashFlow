@@ -15,6 +15,29 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/customers/create/": {
+            "post": {
+                "description": "Responds with a simple \"Create Customers!\" message.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Create Customers"
+                ],
+                "summary": "CreateCustomers Endpoint",
+                "responses": {
+                    "200": {
+                        "description": "Create Customers!",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/hi/": {
             "get": {
                 "description": "Responds with a simple \"hi!\" message.",

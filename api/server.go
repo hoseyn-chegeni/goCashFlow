@@ -14,6 +14,7 @@ func NewServer() *fiber.App {
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 	app.Get("/hi/", SetupRoutes)
+	app.Post("/customers/create/", CreateCustomer)
 
 	return app
 }

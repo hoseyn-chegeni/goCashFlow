@@ -1,6 +1,21 @@
 info:
   contact: {}
 paths:
+  /customers/create/:
+    post:
+      consumes:
+      - application/json
+      description: Responds with a simple "Create Customers!" message.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Create Customers!
+          schema:
+            type: string
+      summary: CreateCustomers Endpoint
+      tags:
+      - Create Customers
   /hi/:
     get:
       consumes:
