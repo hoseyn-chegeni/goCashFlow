@@ -6,10 +6,16 @@ import (
 	"log"
 	"time"
 
+	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+type MongoConfig struct {
+	URI        string
+	Database   string
+	Collection string
+}
 
 
 type Customer struct {
@@ -30,30 +36,47 @@ type Customer struct {
 	UpdatedAt    time.Time `bson:"updated_at" json:"updated_at"`
 }
 
-var Client *mongo.Client
-var CustomerCollection *mongo.Collection
+var (
+	Client              *mongo.Client
+	CustomerCollection  *mongo.Collection
+	MongoSettings       MongoConfig
+)
+
+func LoadConfig() {
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
+
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("❌ Error reading config file: %v", err)
+	}
+
+	MongoSettings = MongoConfig{
+		URI:        viper.GetString("mongodb.uri"),
+		Database:   viper.GetString("mongodb.database"),
+		Collection: viper.GetString("mongodb.collection"),
+	}
+}
 
 func ConnectToMongo() {
+	LoadConfig()
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	mongoURI := "mongodb://localhost:27017"
-
 	var err error
-	Client, err = mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
+	Client, err = mongo.Connect(ctx, options.Client().ApplyURI(MongoSettings.URI))
 	if err != nil {
 		log.Fatal("❌ MongoDB connection error:", err)
 	}
 
-	err = Client.Ping(ctx, nil)
-	if err != nil {
+	if err := Client.Ping(ctx, nil); err != nil {
 		log.Fatal("❌ MongoDB ping failed:", err)
 	}
 
 	fmt.Println("✅ Connected to MongoDB!")
-	CustomerCollection = Client.Database("cashflow").Collection("customers")
+
+	CustomerCollection = Client.
+		Database(MongoSettings.Database).
+		Collection(MongoSettings.Collection)
 }
-
-
-
-
