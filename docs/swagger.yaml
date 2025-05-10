@@ -1,6 +1,79 @@
+definitions:
+  config.Customer:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
+      created_at:
+        type: string
+      date_of_birth:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      gender:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      nationality:
+        type: string
+      phone_number:
+        type: string
+      postal_code:
+        type: string
+      state:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - email
+    - phone_number
+    type: object
 info:
   contact: {}
 paths:
+  /customers:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/config.Customer'
+            type: array
+      summary: Get all customers
+      tags:
+      - Customers
+  /customers/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/config.Customer'
+      summary: Get customer by ID
+      tags:
+      - Customers
   /customers/create/:
     post:
       consumes:
