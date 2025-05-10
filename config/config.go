@@ -11,24 +11,24 @@ import (
 )
 
 
-type Customer struct {
-	ID           int       `bson:"customer_id,omitempty"`  // Customer ID (Auto Increment not supported natively in MongoDB)
-	FirstName    string    `bson:"first_name"`
-	LastName     string    `bson:"last_name"`
-	Email        string    `bson:"email"`
-	PhoneNumber  string    `bson:"phone_number"`
-	Address      string    `bson:"address"`
-	City         string    `bson:"city"`
-	State        string    `bson:"state"`
-	Country      string    `bson:"country"`
-	PostalCode   string    `bson:"postal_code"`
-	DateOfBirth  time.Time `bson:"date_of_birth"`
-	Gender       string    `bson:"gender"`
-	Nationality  string    `bson:"nationality"`
-	CreatedAt    time.Time `bson:"created_at"`
-	UpdatedAt    time.Time `bson:"updated_at"`
-}
 
+type Customer struct {
+	ID           int       `bson:"customer_id,omitempty" json:"id"`
+	FirstName    string    `bson:"first_name" json:"first_name"`
+	LastName     string    `bson:"last_name" json:"last_name"`
+	Email        string    `bson:"email" json:"email" validate:"required,email"`
+	PhoneNumber  string    `bson:"phone_number" json:"phone_number" validate:"required"`
+	Address      string    `bson:"address" json:"address"`
+	City         string    `bson:"city" json:"city"`
+	State        string    `bson:"state" json:"state"`
+	Country      string    `bson:"country" json:"country"`
+	PostalCode   string    `bson:"postal_code" json:"postal_code"`
+	DateOfBirth  time.Time `bson:"date_of_birth" json:"date_of_birth"`
+	Gender       string    `bson:"gender" json:"gender"`
+	Nationality  string    `bson:"nationality" json:"nationality"`
+	CreatedAt    time.Time `bson:"created_at" json:"created_at"`
+	UpdatedAt    time.Time `bson:"updated_at" json:"updated_at"`
+}
 
 var Client *mongo.Client
 var CustomerCollection *mongo.Collection

@@ -25,12 +25,12 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Create Customers"
+                    "Customers"
                 ],
                 "summary": "CreateCustomers Endpoint",
                 "responses": {
                     "200": {
-                        "description": "Create Customers!",
+                        "description": "Customer add successfully!",
                         "schema": {
                             "type": "string"
                         }

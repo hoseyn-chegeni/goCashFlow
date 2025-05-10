@@ -10,12 +10,12 @@ paths:
       - application/json
       responses:
         "200":
-          description: Create Customers!
+          description: Customer add successfully!
           schema:
             type: string
       summary: CreateCustomers Endpoint
       tags:
-      - Create Customers
+      - Customers
   /hi/:
     get:
       consumes:
