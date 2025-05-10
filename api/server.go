@@ -17,6 +17,8 @@ func NewServer() *fiber.App {
 	app.Get("/customers/:id", GetCustomerByID)
 	app.Post("/customers/", CreateCustomer)
 	app.Delete("/customers/:id", DeleteCustomerByID)
+	app.Put("/customers/:id", UpdateCustomer)
+	app.Patch("/customers/:id", PatchCustomer)
 
 	return app
 }

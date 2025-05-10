@@ -151,3 +151,86 @@ func DeleteCustomerByID(c *fiber.Ctx) error {
 		"message": fmt.Sprintf("Customer with ID %d deleted successfully", id),
 	})
 }
+
+
+
+// @Summary Full update of customer
+// @Tags Customers
+// @Param id path int true "Customer ID"
+// @Accept json
+// @Produce json
+// @Success 200 {object} config.Customer
+// @Router /customers/{id} [put]
+func UpdateCustomer(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid ID"})
+	}
+
+	var customer config.Customer
+	if err := c.BodyParser(&customer); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
+	}
+
+	customer.UpdatedAt = time.Now()
+	customer.CreatedAt = time.Now() // Optional
+	customer.ID = id
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	filter := bson.M{"customer_id": id}
+	update := bson.M{"$set": customer}
+
+	res, err := config.CustomerCollection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Update failed"})
+	}
+
+	if res.MatchedCount == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Customer not found"})
+	}
+
+	return c.JSON(fiber.Map{"message": "Customer updated successfully", "customer": customer})
+}
+
+
+// @Summary Partial update of customer
+// @Tags Customers
+// @Param id path int true "Customer ID"
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Router /customers/{id} [patch]
+func PatchCustomer(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid ID"})
+	}
+
+	var updateData map[string]interface{}
+	if err := c.BodyParser(&updateData); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
+	}
+
+	updateData["updated_at"] = time.Now()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	filter := bson.M{"customer_id": id}
+	update := bson.M{"$set": updateData}
+
+	res, err := config.CustomerCollection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Patch update failed"})
+	}
+
+	if res.MatchedCount == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Customer not found"})
+	}
+
+	return c.JSON(fiber.Map{"message": "Customer updated successfully"})
+}
