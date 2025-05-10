@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"time"
 	"context"
 	"strconv"
@@ -111,4 +112,42 @@ func GetCustomerByID(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(customer)
+}
+
+
+
+// @Summary Delete a customer
+// @Tags Customers
+// @Param id path int true "Customer ID"
+// @Success 200 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Router /customers/{id} [delete]
+func DeleteCustomerByID(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid customer ID",
+		})
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	res, err := config.CustomerCollection.DeleteOne(ctx, bson.M{"customer_id": id})
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to delete customer",
+		})
+	}
+
+	if res.DeletedCount == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Customer not found",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": fmt.Sprintf("Customer with ID %d deleted successfully", id),
+	})
 }
