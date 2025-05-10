@@ -1,10 +1,5 @@
-basePath: /
-host: localhost:3000
 info:
   contact: {}
-  description: This is a sample Swagger + Fiber API
-  title: Fiber Swagger API
-  version: "1.0"
 paths:
   /hi/:
     get:

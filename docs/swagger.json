@@ -1,13 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a sample Swagger + Fiber API",
-        "title": "Fiber Swagger API",
-        "contact": {},
-        "version": "1.0"
+        "contact": {}
     },
-    "host": "localhost:3000",
-    "basePath": "/",
     "paths": {
         "/hi/": {
             "get": {
