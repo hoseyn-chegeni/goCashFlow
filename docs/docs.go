@@ -63,6 +63,66 @@ const docTemplate = `{
                 }
             }
         },
+        "/customers/search": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Search customers by name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name to search",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/config.Customer"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/toggle-status/{id}": {
+            "patch": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Toggle customer status (activate/deactivate)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Customer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/customers/{id}": {
             "get": {
                 "consumes": [
@@ -240,6 +300,9 @@ const docTemplate = `{
                 },
                 "state": {
                     "type": "string"
+                },
+                "status": {
+                    "type": "boolean"
                 },
                 "updated_at": {
                     "type": "string"

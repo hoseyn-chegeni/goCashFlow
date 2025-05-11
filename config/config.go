@@ -37,10 +37,22 @@ type Customer struct {
 	Status       bool      `bson:"status" json:"status"`
 }
 
+type Account struct {
+	ID          int       `bson:"account_id,omitempty" json:"id"`
+	CustomerID  int       `bson:"customer_id" json:"customer_id"`               // foreign key
+	AccountType string    `bson:"account_type" json:"account_type"`             // "Checking", "Savings", etc.
+	Balance     float64   `bson:"balance" json:"balance"`                       // consider using float64 for simplicity
+	Status      string    `bson:"status" json:"status"`                         // "Active", "Suspended", "Closed"
+	IsPrimary   bool      `bson:"is_primary" json:"is_primary"`                 // optional: is this the customer's main account?
+	CreatedAt   time.Time `bson:"created_at" json:"created_at"`
+	UpdatedAt   time.Time `bson:"updated_at" json:"updated_at"`
+}
+
 var (
 	Client              *mongo.Client
 	CustomerCollection  *mongo.Collection
 	MongoSettings       MongoConfig
+	AccountCollection *mongo.Collection
 )
 
 func LoadConfig() {
@@ -77,7 +89,7 @@ func ConnectToMongo() {
 
 	fmt.Println("✅ Connected to MongoDB!")
 
-	CustomerCollection = Client.
-		Database(MongoSettings.Database).
-		Collection(MongoSettings.Collection)
+	db := Client.Database(MongoSettings.Database)
+	CustomerCollection = db.Collection("customers")
+	AccountCollection = db.Collection("accounts") 
 }

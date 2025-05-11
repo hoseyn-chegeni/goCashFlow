@@ -29,6 +29,8 @@ definitions:
         type: string
       state:
         type: string
+      status:
+        type: boolean
       updated_at:
         type: string
     required:
@@ -150,6 +152,45 @@ paths:
           schema:
             type: string
       summary: CreateCustomers Endpoint
+      tags:
+      - Customers
+  /customers/search:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Name to search
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/config.Customer'
+            type: array
+      summary: Search customers by name
+      tags:
+      - Customers
+  /customers/toggle-status/{id}:
+    patch:
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Toggle customer status (activate/deactivate)
       tags:
       - Customers
 swagger: "2.0"
