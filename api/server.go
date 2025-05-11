@@ -19,6 +19,7 @@ func NewServer() *fiber.App {
 	app.Delete("/customers/:id", handler.DeleteCustomerByID)
 	app.Put("/customers/:id", handler.UpdateCustomer)
 	app.Patch("/customers/:id", handler.PatchCustomer)
+	app.Get("findcustomers/", handler.SearchCustomerByName)
 
 	return app
 }

@@ -234,3 +234,47 @@ func PatchCustomer(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{"message": "Customer updated successfully"})
 }
+
+
+// @Summary Search customers by name
+// @Tags Customers
+// @Param name query string true "Name to search"
+// @Accept json
+// @Produce json
+// @Success 200 {array} config.Customer
+// @Router /customers/search [get]
+func SearchCustomerByName(c *fiber.Ctx) error {
+	query := c.Query("name")
+	if query == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Query param 'name' is required",
+		})
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// جستجو در first_name یا last_name (با regex حساس‌نبود به حروف بزرگ‌کوچک)
+	filter := bson.M{
+		"$or": []bson.M{
+			{"first_name": bson.M{"$regex": query, "$options": "i"}},
+			{"last_name": bson.M{"$regex": query, "$options": "i"}},
+		},
+	}
+
+	cursor, err := config.CustomerCollection.Find(ctx, filter)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to search customers",
+		})
+	}
+
+	var customers []config.Customer
+	if err := cursor.All(ctx, &customers); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to decode customers",
+		})
+	}
+
+	return c.JSON(customers)
+}
