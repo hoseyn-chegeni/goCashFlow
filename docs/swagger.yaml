@@ -55,6 +55,29 @@ paths:
       tags:
       - Customers
   /customers/{id}:
+    delete:
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a customer
+      tags:
+      - Customers
     get:
       consumes:
       - application/json
@@ -74,6 +97,46 @@ paths:
       summary: Get customer by ID
       tags:
       - Customers
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Partial update of customer
+      tags:
+      - Customers
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/config.Customer'
+      summary: Full update of customer
+      tags:
+      - Customers
   /customers/create/:
     post:
       consumes:
@@ -89,19 +152,4 @@ paths:
       summary: CreateCustomers Endpoint
       tags:
       - Customers
-  /hi/:
-    get:
-      consumes:
-      - application/json
-      description: Responds with a simple "hi!" message.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: SetupRoutes!
-          schema:
-            type: string
-      summary: SetupRoutes Endpoint
-      tags:
-      - SetupRoutes
 swagger: "2.0"

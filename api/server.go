@@ -1,24 +1,24 @@
 package api
 
 import (
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
+	_ "gocashflow/docs"
 
-	_ "gocashflow/docs" // required for Swagger docs
+	"gocashflow/api/handler"
 )
 
-// NewServer initializes and returns a configured Fiber app
 func NewServer() *fiber.App {
 	app := fiber.New()
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
-	app.Get("customers/", GetAllCustomers)
-	app.Get("/customers/:id", GetCustomerByID)
-	app.Post("/customers/", CreateCustomer)
-	app.Delete("/customers/:id", DeleteCustomerByID)
-	app.Put("/customers/:id", UpdateCustomer)
-	app.Patch("/customers/:id", PatchCustomer)
+
+	app.Get("/customers", handler.GetAllCustomers)
+	app.Get("/customers/:id", handler.GetCustomerByID)
+	app.Post("/customers", handler.CreateCustomer)
+	app.Delete("/customers/:id", handler.DeleteCustomerByID)
+	app.Put("/customers/:id", handler.UpdateCustomer)
+	app.Patch("/customers/:id", handler.PatchCustomer)
 
 	return app
 }
