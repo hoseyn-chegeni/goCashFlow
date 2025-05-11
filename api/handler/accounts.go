@@ -83,3 +83,49 @@ func DeleteAccount(c *fiber.Ctx) error {
 	}
 	return c.JSON(fiber.Map{"message": fmt.Sprintf("Account %d deleted", id)})
 }
+
+// ✅ Update account
+func PatchAccount(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid account ID",
+		})
+	}
+
+	var updateData map[string]interface{}
+	if err := c.BodyParser(&updateData); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid input format",
+		})
+	}
+
+	// بروز رسانی زمان آخرین تغییر
+	updateData["updated_at"] = time.Now()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	res, err := config.AccountCollection.UpdateOne(
+		ctx,
+		bson.M{"account_id": id},
+		bson.M{"$set": updateData},
+	)
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to update account",
+		})
+	}
+
+	if res.MatchedCount == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Account not found",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": fmt.Sprintf("Account %d updated successfully", id),
+	})
+}

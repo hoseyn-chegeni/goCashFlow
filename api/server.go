@@ -26,6 +26,7 @@ func NewServer() *fiber.App {
 	app.Get("/accounts/", handler.GetAllAccounts)
 	app.Get("/accounts/:id", handler.GetAccountByID)
 	app.Put("accounts/:id", handler.UpdateAccount)
+	app.Patch("/accounts/:id", handler.PatchAccount)
 	app.Delete("/accounts/:id", handler.DeleteAccount)
 
 
