@@ -34,6 +34,7 @@ type Customer struct {
 	Nationality  string    `bson:"nationality" json:"nationality"`
 	CreatedAt    time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt    time.Time `bson:"updated_at" json:"updated_at"`
+	Status       bool      `bson:"status" json:"status"`
 }
 
 var (

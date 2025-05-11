@@ -20,6 +20,8 @@ func NewServer() *fiber.App {
 	app.Put("/customers/:id", handler.UpdateCustomer)
 	app.Patch("/customers/:id", handler.PatchCustomer)
 	app.Get("findcustomers/", handler.SearchCustomerByName)
+	app.Patch("/customers/toggle-status/:id", handler.ToggleCustomerStatus)
+
 
 	return app
 }

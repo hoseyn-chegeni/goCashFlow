@@ -278,3 +278,51 @@ func SearchCustomerByName(c *fiber.Ctx) error {
 
 	return c.JSON(customers)
 }
+
+
+
+// @Summary Toggle customer status (activate/deactivate)
+// @Tags Customers
+// @Param id path int true "Customer ID"
+// @Success 200 {object} map[string]interface{}
+// @Router /customers/toggle-status/{id} [patch]
+func ToggleCustomerStatus(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid customer ID"})
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var customer config.Customer
+	err = config.CustomerCollection.FindOne(ctx, bson.M{"customer_id": id}).Decode(&customer)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Customer not found"})
+	}
+
+	// تغییر وضعیت فعلی به برعکس
+	newStatus := !customer.Status
+	update := bson.M{
+		"$set": bson.M{
+			"status":     newStatus,
+			"updated_at": time.Now(),
+		},
+	}
+
+	_, err = config.CustomerCollection.UpdateOne(ctx, bson.M{"customer_id": id}, update)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update status"})
+	}
+
+	statusStr := "deactivated"
+	if newStatus {
+		statusStr = "activated"
+	}
+
+	return c.JSON(fiber.Map{
+		"message": fmt.Sprintf("Customer %d %s successfully", id, statusStr),
+		"status":  newStatus,
+	})
+}
